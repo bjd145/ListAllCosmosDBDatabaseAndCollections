@@ -1,0 +1,13 @@
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.csprojAssemblyReference.cache
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.csproj.CoreCompileInputs.cache
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.AssemblyInfoInputs.cache
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.AssemblyInfo.cs
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\Microsoft.Azure.Documents.ServiceInterop.dll
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\DocumentDB.Spatial.Sql.dll
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.deps.json
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.runtimeconfig.json
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.runtimeconfig.dev.json
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.dll
+C:\Working\cosmosdb-walk-database-collection\bin\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.pdb
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.dll
+C:\Working\cosmosdb-walk-database-collection\obj\Debug\netcoreapp2.1\cosmosdb-walk-database-collection.pdb
