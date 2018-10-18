@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_bjdfunc001_name": {
+            "value": null
+        },
+        "connections_teams_name": {
+            "value": null
+        },
+        "connections_azurequeues_name": {
+            "value": null
+        },
+        "serverfarms_CentralUSPlan_name": {
+            "value": null
+        },
+        "components_bjdfunc001_name": {
+            "value": null
+        },
+        "workflows_bjdTeamsApp001_name": {
+            "value": null
+        },
+        "config_web_name": {
+            "value": null
+        },
+        "storageAccounts_bjdfunc0028bfe_name": {
+            "value": null
+        },
+        "storageAccounts_bjdcosmostracker001_name": {
+            "value": null
+        },
+        "alertrules_Failure_Anomalies___bjdfunc001_name": {
+            "value": null
+        },
+        "hostNameBindings_bjdfunc001.azurewebsites.net_name": {
+            "value": null
+        }
+    }
+}
