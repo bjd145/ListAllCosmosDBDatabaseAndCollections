@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Azure.WebJobs.Extensions.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -13,12 +14,13 @@ using System.Threading.Tasks;
 using CosmosDbTrackerApp.Models;
 using CosmosDbTrackerApp.Common;
 using CosmosDbTrackerApp.Services;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace CosmosDbTrackerApp
 {
     public static class CosmosDbTracker
     {
-        public static async Task WalkCosmosAccounts(IAzure azure, ILogger log)
+        public static async Task WalkCosmosAccounts(IAzure azure, ICollector<string> items, ILogger log)
         {
             var dBService = new AzureDBService();
             var tableTracker = await dBService.GetCosmosAccountInfo();
@@ -43,6 +45,7 @@ namespace CosmosDbTrackerApp
                                     .Where(x => x.CollectionName == col.Id).SingleOrDefault();
                             if( tableTracker == null || record == null ) {
                                 await dBService.AddNewCollectionRecord( new Cosmosdb(){ AccountName = cosmosDBAccount.Name, DatabaseName = db.Id, CollectionName = col.Id }) ;
+                                items.Add($"{cosmosDBAccount.Name}/{db.Id}/{col.Id}");
                             }
                             else {
                                 await dBService.UpdateCollectionRecord( record.RowKey, record );
@@ -58,7 +61,10 @@ namespace CosmosDbTrackerApp
 		}
 
         [FunctionName("CosmosDbTracker")]
-        public static void Run([TimerTrigger("0 */2 * * * *")]TimerInfo myTimer, ILogger log)
+        public static void Run(
+                [TimerTrigger("0 */2 * * * *")]TimerInfo myTimer, 
+                [Queue("alerts", Connection = "OUTPUT_QUEUE")] ICollector<string> myQueueItems,
+                ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             try
@@ -72,7 +78,7 @@ namespace CosmosDbTrackerApp
                     .Authenticate(credentials)
                     .WithDefaultSubscription();
 
-				WalkCosmosAccounts(azure, log).Wait();
+				WalkCosmosAccounts(azure, myQueueItems, log).Wait();
             }
             catch (Exception e)
             {
