@@ -20,7 +20,7 @@ namespace CosmosDbTrackerApp
 {
     public static class CosmosDbTracker
     {
-        public static async Task WalkCosmosAccounts(IAzure azure, ICollector<string> items, ILogger log)
+        public static async Task WalkCosmosAccounts(IAzure azure, IAsyncCollector<string> items, ILogger log)
         {
             var dBService = new AzureDBService();
             var tableTracker = await dBService.GetCosmosAccountInfo();
@@ -49,7 +49,7 @@ namespace CosmosDbTrackerApp
                             if (tableTracker == null || record == null)
                             {
                                 await dBService.AddNewCollectionRecord(new Cosmosdb() { AccountName = cosmosDBAccount.Name, DatabaseName = db.Id, CollectionName = col.Id });
-                                items.Add($"{cosmosDBAccount.Name}/{db.Id}/{col.Id}");
+                                await items.AddAsync($"{cosmosDBAccount.Name}/{db.Id}/{col.Id}");
                             }
                             else
                             {
@@ -69,7 +69,7 @@ namespace CosmosDbTrackerApp
         [FunctionName("CosmosDbTracker")]
         public static void Run(
                 [TimerTrigger("0 */2 * * * *")]TimerInfo myTimer,
-                [Queue("alerts", Connection = "OUTPUT_QUEUE")] ICollector<string> myQueueItems,
+                [Queue("alerts", Connection = "OUTPUT_QUEUE")] IAsyncCollector<string> myQueueItems,
                 ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
