@@ -2,73 +2,45 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sites_bjdfunc001_name": {
-            "defaultValue": "bjdfunc001",
-            "type": "String"
+        "functionName": {
+            "type": "string"
         },
-        "connections_teams_name": {
-            "defaultValue": "teams",
-            "type": "String"
+        "workflowsName": {
+            "type": "string"
         },
-        "connections_azurequeues_name": {
-            "defaultValue": "azurequeues",
-            "type": "String"
+        "functionStorageAccounts": {
+            "type": "string"
         },
-        "serverfarms_CentralUSPlan_name": {
-            "defaultValue": "CentralUSPlan",
-            "type": "String"
-        },
-        "components_bjdfunc001_name": {
-            "defaultValue": "bjdfunc001",
-            "type": "String"
-        },
-        "workflows_bjdTeamsApp001_name": {
-            "defaultValue": "bjdTeamsApp001",
-            "type": "String"
-        },
-        "config_web_name": {
-            "defaultValue": "web",
-            "type": "String"
-        },
-        "storageAccounts_bjdfunc0028bfe_name": {
-            "defaultValue": "bjdfunc0028bfe",
-            "type": "String"
-        },
-        "storageAccounts_bjdcosmostracker001_name": {
-            "defaultValue": "bjdcosmostracker001",
-            "type": "String"
-        },
-        "alertrules_Failure_Anomalies___bjdfunc001_name": {
-            "defaultValue": "Failure Anomalies - bjdfunc001",
-            "type": "String"
-        },
-        "hostNameBindings_bjdfunc001.azurewebsites.net_name": {
-            "defaultValue": "bjdfunc001.azurewebsites.net",
-            "type": "String"
+        "cosmosdbStorageAccounts": {
+            "type": "string"
         }
     },
     "variables": {
         "teamId": "",
-        "teamChannelId": ""
+        "teamChannelId": "",
+        "teamConnections": "teams",
+        "queueConnections": "azurequeues",
+        "serverfarmsName": "CentralUSPlan",
+        "alertRulesName": "Failure Anomalies - bjdfunc001"
     },
     "resources": [
         {
             "type": "microsoft.insights/alertrules",
-            "name": "[parameters('alertrules_Failure_Anomalies___bjdfunc001_name')]",
+            "name": "[variables('alertRulesName')]",
             "apiVersion": "2014-04-01",
-            "location": "East US",
+            "location": "eastus",
             "tags": {
             },
             "scale": null,
             "properties": {
-                "name": "[parameters('alertrules_Failure_Anomalies___bjdfunc001_name')]",
+                "name": "[variables('alertRulesName')]",
                 "description": "",
                 "isEnabled": true,
                 "condition": {
                     "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
                     "dataSource": {
                         "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
-                        "resourceUri": "[resourceId('microsoft.insights/components', parameters('components_bjdfunc001_name'))]",
+                        "resourceUri": "[resourceId('microsoft.insights/components', parameters('functionName'))]",
                         "metricNamespace": null,
                         "metricName": "advanced::A3108E3D-5E26-44CF-B232-783F5E20EF10::ewAiAEgAeQBwAGUAcgBpAG8AbgBBAHAAcABsAGkAYwBhAHQAaQBvAG4AUwBpAGQAIgA6AG4AdQBsAGwALAAiAEgAeQBwAGUAcgBpAG8AbgBTAHUAYgBqAGUAYwB0AFMAaQBkACIAOgBuAHUAbABsACwAIgBIAHkAcABlAHIAaQBvAG4ATwBiAHMAZQByAHYAZQByAFMAaQBkACIAOgBuAHUAbABsACwAIgBDAHUAcwB0AG8AbQBlAHIAQQBjAGMAbwB1AG4AdABJAGQAIgA6ACIAMAAwADAAMAAwADAAMAAwAC0AMAAwADAAMAAtADAAMAAwADAALQAwADAAMAAwAC0AMAAwADAAMAAwADAAMAAwADAAMAAwADAAIgAsACIAQQBwAHAAbABpAGMAYQB0AGkAbwBuAE4AYQBtAGUAIgA6AG4AdQBsAGwALAAiAEEAcABwAGwAaQBjAGEAdABpAG8AbgBJAGQAIgA6AG4AdQBsAGwALAAiAFAAcgBvAGYAaQBsAGUASQBkACIAOgAwACwAIgBXAGkAbgBkAG8AdwBTAGkAegBlAEkAbgBNAGkAbgB1AHQAZQBzACIAOgA2ADAALAAiAE0AZQB0AHIAaQBjAE4AYQBtAGUAIgA6ACIAIgAsACIAVABoAHIAZQBzAGgAbwBsAGQAIgA6ADIALgAwACwAIgBBAGwAZQByAHQAVABlAG0AcABsAGEAdABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAE4AYQBtAGUAIgA6ACIAIgAsACIAUgB1AGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AIgA6ACIAIgAsACIAUgBlAHMAbwB1AHIAYwBlAEkAZAAiADoAbgB1AGwAbAAsACIAUwB1AGIAcwBjAHIAaQBwAHQAaQBvAG4ASQBkACIAOgBuAHUAbABsACwAIgBBAGcAZwByAGUAZwBhAHQAZQBGAHUAbgBjAHQAaQBvAG4AIgA6ACIAIgAsACIAQwBvAG0AcABhAHIAaQBzAG8AbgBPAHAAZQByAGEAdABvAHIAIgA6ACIAewBcACIAQgBhAHMAZQBsAGkAbgBlAFQAaQBtAGUAcwBwAGEAbgBcACIAOgBcACIAMAAwADoANAAwADoAMAAwAFwAIgAsAFwAIgBJAG4AcwBpAGcAaAB0AHMAUwBlAHIAdgBpAGMAZQBMAGEAZwBcACIAOgBcACIAMAAwADoAMAAwADoAMAAwAFwAIgAsAFwAIgBCAHUAZgBmAGUAcgBUAGkAbQBlAFwAIgA6AFwAIgAwADAAOgAwADEAOgAwADAAXAAiACwAXAAiAEIAbABvAGIAUwB0AG8AcgBhAGcAZQBMAG8AZwBnAGkAbgBnAEUAbgBhAGIAbABlAGQAXAAiADoAZgBhAGwAcwBlACwAXAAiAFUAcwBlAHIAUwB1AHAAcAByAGUAcwBzAGkAbwBuAHMAXAAiADoAbgB1AGwAbAAsAFwAIgBQAHIAbwBmAGkAbABlAEkAZABcACIAOgAwACwAXAAiAEUAbQBhAGkAbABUAHkAcABlAFwAIgA6ADAALABcACIAUgBkAGQARgBhAGkAbAB1AHIAZQBzAFMAcABpAGsAZQBUAGgAcgBlAHMAaABvAGwAZABcACIAOgAzAC4AMAAsAFwAIgBSAGEAdwBQAHIAbwBhAGMAdABpAHYAZQBSAHUAbABlAEMAbwBuAGYAaQBnAFwAIgA6AG4AdQBsAGwAfQAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8AQwB1AHMAdABvAG0AIgA6AGYAYQBsAHMAZQAsACIAQwB1AHMAdABvAG0ARQBtAGEAaQBsAHMARQBuAGMAbwBkAGUAZAAiADoAIgAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8ATwB3AG4AZQByAHMAIgA6AGYAYQBsAHMAZQB9AA=="
                     },
@@ -83,13 +55,13 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_bjdfunc001_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('functionName'))]"
             ]
         },
         {
             "type": "microsoft.insights/components",
             "kind": "web",
-            "name": "[parameters('components_bjdfunc001_name')]",
+            "name": "[parameters('functionName')]",
             "apiVersion": "2015-05-01",
             "location": "eastus",
             "tags": {
@@ -107,9 +79,9 @@
         },
         {
             "type": "Microsoft.Logic/workflows",
-            "name": "[parameters('workflows_bjdTeamsApp001_name')]",
+            "name": "[parameters('workflowsName')]",
             "apiVersion": "2017-07-01",
-            "location": "centralus",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "scale": null,
             "properties": {
@@ -171,12 +143,12 @@
                     "$connections": {
                         "value": {
                             "azurequeues": {
-                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azurequeues_name'))]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('queueConnections'))]",
                                 "connectionName": "azurequeues",
                                 "id": "[concat('/subscriptions/', subscription().subscriptionId ,'/providers/Microsoft.Web/locations/centralus/managedApis/azurequeues')]"
                             },
                             "teams": {
-                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_teams_name'))]",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', variables('teamConnections'))]",
                                 "connectionName": "teams",
                                 "id": "[concat('/subscriptions/', subscription().subscriptionId ,'/providers/Microsoft.Web/locations/centralus/managedApis/teams')]"
                             }
@@ -185,8 +157,8 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/connections', parameters('connections_azurequeues_name'))]",
-                "[resourceId('Microsoft.Web/connections', parameters('connections_teams_name'))]"
+                "[resourceId('Microsoft.Web/connections', variables('queueConnections'))]",
+                "[resourceId('Microsoft.Web/connections', variables('teamConnections'))]"
             ]
         },
         {
@@ -196,9 +168,9 @@
                 "tier": "Standard"
             },
             "kind": "Storage",
-            "name": "[parameters('storageAccounts_bjdfunc0028bfe_name')]",
+            "name": "[parameters('cosmosdbStorageAccounts')]",
             "apiVersion": "2018-07-01",
-            "location": "centralus",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "scale": null,
             "properties": {
@@ -230,9 +202,9 @@
                 "tier": "Standard"
             },
             "kind": "Storage",
-            "name": "[parameters('storageAccounts_bjdcosmostracker001_name')]",
+            "name": "[parameters('functionStorageAccounts')]",
             "apiVersion": "2018-07-01",
-            "location": "centralus",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "scale": null,
             "properties": {
@@ -260,30 +232,30 @@
         },
         {
             "type": "Microsoft.Web/connections",
-            "name": "[parameters('connections_azurequeues_name')]",
+            "name": "[variables('queueConnections')]",
             "apiVersion": "2016-06-01",
-            "location": "centralus",
+            "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
-                "displayName": "bjdcosmostracker001",
+                "displayName": "CosmosConnection",
                 "customParameterValues": {},
                 "api": {
-                    "id": "[concat('/subscriptions/', subscription().id ,'/providers/Microsoft.Web/locations/centralus/managedApis/', parameters('connections_azurequeues_name'))]"
+                    "id": "[concat('/subscriptions/', subscription().id ,'/providers/Microsoft.Web/locations/centralus/managedApis/', variables('queueConnections'))]"
                 }
             },
             "dependsOn": []
         },
         {
             "type": "Microsoft.Web/connections",
-            "name": "[parameters('connections_teams_name')]",
+            "name": "[variables('teamConnections')]",
             "apiVersion": "2016-06-01",
-            "location": "centralus",
+            "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
-                "displayName": "brdenico@microsoft.com",
+                "displayName": "TeamsConnection",
                 "customParameterValues": {},
                 "api": {
-                    "id": "[concat('/subscriptions/', subscription().id ,'/providers/Microsoft.Web/locations/centralus/managedApis/', parameters('connections_teams_name'))]"
+                    "id": "[concat('/subscriptions/', subscription().id ,'/providers/Microsoft.Web/locations/centralus/managedApis/', parameters('teamConnections'))]"
                 }
             },
             "dependsOn": []
@@ -298,12 +270,12 @@
                 "capacity": 0
             },
             "kind": "functionapp",
-            "name": "[parameters('serverfarms_CentralUSPlan_name')]",
+            "name": "[variables('serverfarmsName')]",
             "apiVersion": "2016-09-01",
             "location": "Central US",
             "scale": null,
             "properties": {
-                "name": "[parameters('serverfarms_CentralUSPlan_name')]",
+                "name": "[variables('serverfarmsName')]",
                 "workerTierName": null,
                 "adminSiteName": null,
                 "hostingEnvironmentProfile": null,
@@ -317,15 +289,15 @@
         {
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
-            "name": "[parameters('sites_bjdfunc001_name')]",
+            "name": "[parameters('functionName')]",
             "apiVersion": "2016-08-01",
-            "location": "Central US",
+            "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
                 "enabled": true,
                 "hostNameSslStates": [
                     {
-                        "name": "[concat(parameters('sites_bjdfunc001_name'),'.azurewebsites.net')]",
+                        "name": "[concat(parameters('functionName'),'.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "virtualIP": null,
                         "thumbprint": null,
@@ -333,7 +305,7 @@
                         "hostType": "Standard"
                     },
                     {
-                        "name": "[concat(parameters('sites_bjdfunc001_name'),'.scm.azurewebsites.net')]",
+                        "name": "[concat(parameters('functionName'),'.scm.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "virtualIP": null,
                         "thumbprint": null,
@@ -341,7 +313,7 @@
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_CentralUSPlan_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarmsName'))]",
                 "reserved": false,
                 "siteConfig": null,
                 "scmSiteAlsoStopped": false,
@@ -354,14 +326,14 @@
                 "cloningInfo": null
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_CentralUSPlan_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('serverfarmsName'))]"
             ]
         },
         {
             "type": "Microsoft.Web/sites/config",
-            "name": "[concat(parameters('sites_bjdfunc001_name'), '/', parameters('config_web_name'))]",
+            "name": "[concat(parameters('functionName'), '/web')]",
             "apiVersion": "2016-08-01",
-            "location": "Central US",
+            "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
                 "numberOfWorkers": 1,
@@ -374,22 +346,22 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_bjdfunc001_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('functionName'))]"
             ]
         },
         {
             "type": "Microsoft.Web/sites/hostNameBindings",
-            "name": "[concat(parameters('sites_bjdfunc001_name'), '/', parameters('hostNameBindings_bjdfunc001.azurewebsites.net_name'))]",
+            "name": "[concat(parameters('functionName'), '/', parameters('functionName'),'.azurewebsites.net')]",
             "apiVersion": "2016-08-01",
-            "location": "Central US",
+            "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
-                "siteName": "bjdfunc001",
+                "siteName": "[parameters('functionName')]",
                 "domainId": null,
                 "hostNameType": "Verified"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_bjdfunc001_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('functionName'))]"
             ]
         }
     ]
