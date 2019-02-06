@@ -37,20 +37,22 @@ namespace bjd.CosmosDB.CollectionTracker
                     .WithSubscription(Environment.GetEnvironmentVariable("AZURE_SUBSCRIPTIONID"));
 
                 Utilities.Log($"Selected subscription: {azure.SubscriptionId}");
-                            
+
                 foreach (var cosmosDBAccount in azure.CosmosDBAccounts.List())
                 {
-                    var account = new CosmosDbAccounts() {
+                    var account = new CosmosDbAccounts()
+                    {
                         Accountname = cosmosDBAccount.Name,
                         EndPoint = cosmosDBAccount.DocumentEndpoint,
                         MasterKey = cosmosDBAccount.ListKeys().PrimaryMasterKey
                     };
-                    Task.Run( async () => { 
-                        await account.QueryCosmosDbAccountForDatabasesAndCollections(); 
+                    Task.Run(async () =>
+                    {
+                        await account.QueryCosmosDbAccountForDatabasesAndCollections();
                     }).GetAwaiter().GetResult();
                     tracker.cosmosDbAccounts.Add(account);
                 }
-                tracker.Print(); 
+                tracker.Print();
             }
             catch (Exception e)
             {
